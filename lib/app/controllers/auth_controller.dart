@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_firebase/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
@@ -9,15 +10,46 @@ class AuthController extends GetxController {
 
   void login(String email, String password) async {
     try {
-      await auth.signInWithEmailAndPassword(
+      UserCredential myUser = await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      Get.offAllNamed(Routes.HOME);
+      if (myUser.user?.emailVerified == true) {
+        Get.snackbar("Berhasil Login", "Selamat datang ${myUser.user?.email}",
+            snackPosition: SnackPosition.BOTTOM,
+            margin: EdgeInsets.all(10),
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+            duration: Duration(seconds: 5));
+        Get.offAllNamed(Routes.HOME);
+      } else {
+        Get.snackbar(
+            "Verifikasi Email", "Anda harus verifikasi email terlebih dahulu",
+            snackPosition: SnackPosition.BOTTOM,
+            margin: EdgeInsets.all(10),
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            duration: Duration(seconds: 5));
+        Get.offAllNamed(Routes.LOGIN);
+      }
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+      print("yayayayyayayayayayya ${e.code}");
+      if (e.code == 'invalid-credential') {
+        Get.snackbar(
+            "User tidak terdaftar", "Tidak ada user dengan email $email",
+            snackPosition: SnackPosition.BOTTOM,
+            margin: EdgeInsets.all(10),
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            duration: Duration(seconds: 5));
+        print("sddsdsd");
       } else if (e.code == 'wrong-password') {
+        Get.snackbar("Password Salah", "Password yang anda masukkan salah",
+            snackPosition: SnackPosition.BOTTOM,
+            margin: EdgeInsets.all(10),
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            duration: Duration(seconds: 5));
         print('Wrong password provided for that user.');
       }
     }
@@ -25,16 +57,49 @@ class AuthController extends GetxController {
 
   void signUp(String email, String password) async {
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      UserCredential myUser =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      Get.offAllNamed(Routes.HOME);
+      if (myUser.user?.emailVerified == true) {
+        Get.offAllNamed(Routes.HOME);
+      } else {
+        // Get.snackbar("Verifikasi Email", "Kami telah mengirimkan email verifikasi ke ${myUser.user?.email}",
+        //     snackPosition: SnackPosition.BOTTOM,
+        //     margin: EdgeInsets.all(10),
+        //     backgroundColor: Colors.green,
+        //     colorText: Colors.white,
+        //     duration: Duration(seconds: 5));
+        Get.defaultDialog(
+          title: "Verifikasi Email",
+          middleText:
+              "Kami telah mengirimkan email verifikasi ke ${myUser.user?.email}",
+          textConfirm: "OK",
+          onConfirm: () {
+            Get.back();
+            Get.back();
+          },
+        );
+        myUser.user?.sendEmailVerification();
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+        Get.snackbar(
+            "Password lemah", "Password yang anda masukkan terlalu lemah",
+            snackPosition: SnackPosition.BOTTOM,
+            margin: EdgeInsets.all(10),
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            duration: Duration(seconds: 5));
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+        Get.snackbar(
+            "Email sudah terdaftar", "Email yang anda masukkan sudah terdaftar",
+            snackPosition: SnackPosition.BOTTOM,
+            margin: EdgeInsets.all(10),
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            duration: Duration(seconds: 5));
       }
     } catch (e) {
       print(e);
