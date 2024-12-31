@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase/app/controllers/auth_controller.dart';
+import 'package:flutter_firebase/app/modules/reset_password/controllers/reset_password_controller.dart';
 import 'package:flutter_firebase/app/routes/app_pages.dart';
 
 import 'package:get/get.dart';
 
-import '../controllers/login_controller.dart';
-
-class LoginView extends GetView<LoginController> {
+class ResetPasswordView extends GetView<ResetPasswordController> {
   final AuthController authC = Get.find<AuthController>();
   final emailC = TextEditingController(text: "rapsanza@gmail.com");
-  final passwordC = TextEditingController(text: "123456");
-  LoginView({super.key});
+  ResetPasswordView({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('LoginView'),
+        title: const Text('Ganti Password'),
         centerTitle: true,
       ),
       body: Padding(
@@ -28,19 +26,8 @@ class LoginView extends GetView<LoginController> {
                   labelText: 'Email', border: OutlineInputBorder()),
             ),
             SizedBox(height: 8),
-            TextField(
-              controller: passwordC,
-              decoration: const InputDecoration(
-                  labelText: 'Password', border: OutlineInputBorder()),
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                  onPressed: () => Get.toNamed(Routes.RESET_PASSWORD),
-                  child: Text("Lupa Password?")),
-            ),
             ElevatedButton(
-              onPressed: () => authC.login(emailC.text, passwordC.text),
+              onPressed: () => authC.resetPassword(emailC.text),
               style: ButtonStyle(
                 backgroundColor: WidgetStatePropertyAll(Colors.blue),
                 shape: WidgetStatePropertyAll(
@@ -49,19 +36,8 @@ class LoginView extends GetView<LoginController> {
                   ),
                 ),
               ),
-              child: const Text("Login"),
+              child: const Text("Ganti"),
             ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Belum punya akun? "),
-                TextButton(
-                  onPressed: () => Get.toNamed(Routes.SIGNUP),
-                  child: Text("Daftar sekarang"),
-                )
-              ],
-            )
           ],
         ),
       ),

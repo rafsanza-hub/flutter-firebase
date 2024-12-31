@@ -111,7 +111,59 @@ class AuthController extends GetxController {
     Get.offAllNamed(Routes.LOGIN);
   }
 
-  void forgotPassword() {}
+  void resetPassword(String email) async {
+  
+      try {
+        await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+        Get.back();
+        print("hahahah");
+        Get.snackbar(
+            "Berhasil", "Kami telah mengirimkan reset password ke email $email",
+            snackPosition: SnackPosition.BOTTOM,
+            margin: EdgeInsets.all(10),
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+            duration: Duration(seconds: 5));
+      } on FirebaseAuthException catch (e) {
+        print("kakakakka");
+        print(e.code);
+        if (e.code == 'user-not-found') {
+          Get.snackbar(
+            "Terjadi Kesalahan",
+            "Email tidak ditemukan. Pastikan email sudah terdaftar.",
+            snackPosition: SnackPosition.BOTTOM,
+            margin: EdgeInsets.all(10),
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            duration: Duration(seconds: 5),
+          );
+        } 
+        if(e.code == "invalid-email") {
+          Get.snackbar(
+            "Terjadi Kesalahan",
+            "Yang anda masukan bukan email",
+            snackPosition: SnackPosition.BOTTOM,
+            margin: EdgeInsets.all(10),
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            duration: Duration(seconds: 5),
+          );
+        }
+        if(e.code == "channel-error") {
+          Get.snackbar(
+            "Terjadi Kesalahan",
+            "Harap masukkan email terlebih dahulu",
+            snackPosition: SnackPosition.BOTTOM,
+            margin: EdgeInsets.all(10),
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            duration: Duration(seconds: 5),
+          );
+        }
+      }
+   
+  }
+
   void updateProfile() {}
   void updatePassword() {}
   void deleteAccount() {}
