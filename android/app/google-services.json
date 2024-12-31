@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "236911169166",
+    "project_id": "first-firebase-project-be4db",
+    "storage_bucket": "first-firebase-project-be4db.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:236911169166:android:f41456c042b52033d403df",
+        "android_client_info": {
+          "package_name": "com.rf.flutter_firebase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOfINMFzYs8ys0LjGCvSSvFDslPW5VbtI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
