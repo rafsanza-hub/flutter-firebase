@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase/app/controllers/auth_controller.dart';
 import 'package:flutter_firebase/app/modules/reset_password/controllers/reset_password_controller.dart';
-import 'package:flutter_firebase/app/routes/app_pages.dart';
 
 import 'package:get/get.dart';
 

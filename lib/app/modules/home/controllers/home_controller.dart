@@ -1,23 +1,40 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
-  //TODO: Implement HomeController
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  Stream<QuerySnapshot<Map<String, dynamic>>> products =
+      FirebaseFirestore.instance.collection('products').orderBy("created_at").snapshots();
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+  Future delete(doc) {
+    var docRef = FirebaseFirestore.instance.collection('products').doc(doc);
+
+    return Get.defaultDialog(
+      title: "Hapus Data",
+      middleText: "Apakah anda yakin ingin menghapus data ini?",
+      textConfirm: "Ya",
+      textCancel: "Tidak",
+      onConfirm: () {
+         Get.back();
+        docRef.delete().then(
+          (value) {
+            Get.snackbar("Berhasil", "Data berhasil dihapus",
+                snackPosition: SnackPosition.BOTTOM,
+                margin: EdgeInsets.all(10),
+                backgroundColor: Colors.green,
+                colorText: Colors.white,
+                duration: Duration(seconds: 5));
+          },
+        ).catchError((error) {
+          Get.snackbar("Gagal", "Data gagal dihapus",
+              snackPosition: SnackPosition.BOTTOM,
+              margin: EdgeInsets.all(10),
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+              duration: Duration(seconds: 5));
+        });
+      },
+    );
   }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }

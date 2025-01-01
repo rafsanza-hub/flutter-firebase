@@ -34,7 +34,7 @@ class AuthController extends GetxController {
       }
     } on FirebaseAuthException catch (e) {
       print("yayayayyayayayayayya ${e.code}");
-      if (e.code == 'invalid-credential') {
+      if (e.code == 'user-not-found') {
         Get.snackbar(
             "User tidak terdaftar", "Tidak ada user dengan email $email",
             snackPosition: SnackPosition.BOTTOM,
@@ -51,6 +51,22 @@ class AuthController extends GetxController {
             colorText: Colors.white,
             duration: Duration(seconds: 5));
         print('Wrong password provided for that user.');
+      } else if (e.code == 'channel-error') {
+        Get.snackbar(
+            "Terjadi kesalahan", "Masukkan email dan password terlebih dahulu",
+            snackPosition: SnackPosition.BOTTOM,
+            margin: EdgeInsets.all(10),
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            duration: Duration(seconds: 5));
+      } else if (e.code == 'too-many-requests') {
+        Get.snackbar(
+            "Terlalu banyak permintaan", "coba lagi nanti",
+            snackPosition: SnackPosition.BOTTOM,
+            margin: EdgeInsets.all(10),
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            duration: Duration(seconds: 5));
       }
     }
   }
@@ -112,56 +128,54 @@ class AuthController extends GetxController {
   }
 
   void resetPassword(String email) async {
-  
-      try {
-        await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-        Get.back();
-        print("hahahah");
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      Get.back();
+      print("hahahah");
+      Get.snackbar(
+          "Berhasil", "Kami telah mengirimkan reset password ke email $email",
+          snackPosition: SnackPosition.BOTTOM,
+          margin: EdgeInsets.all(10),
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: Duration(seconds: 5));
+    } on FirebaseAuthException catch (e) {
+      print("kakakakka");
+      print(e.code);
+      if (e.code == 'user-not-found') {
         Get.snackbar(
-            "Berhasil", "Kami telah mengirimkan reset password ke email $email",
-            snackPosition: SnackPosition.BOTTOM,
-            margin: EdgeInsets.all(10),
-            backgroundColor: Colors.green,
-            colorText: Colors.white,
-            duration: Duration(seconds: 5));
-      } on FirebaseAuthException catch (e) {
-        print("kakakakka");
-        print(e.code);
-        if (e.code == 'user-not-found') {
-          Get.snackbar(
-            "Terjadi Kesalahan",
-            "Email tidak ditemukan. Pastikan email sudah terdaftar.",
-            snackPosition: SnackPosition.BOTTOM,
-            margin: EdgeInsets.all(10),
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-            duration: Duration(seconds: 5),
-          );
-        } 
-        if(e.code == "invalid-email") {
-          Get.snackbar(
-            "Terjadi Kesalahan",
-            "Yang anda masukan bukan email",
-            snackPosition: SnackPosition.BOTTOM,
-            margin: EdgeInsets.all(10),
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-            duration: Duration(seconds: 5),
-          );
-        }
-        if(e.code == "channel-error") {
-          Get.snackbar(
-            "Terjadi Kesalahan",
-            "Harap masukkan email terlebih dahulu",
-            snackPosition: SnackPosition.BOTTOM,
-            margin: EdgeInsets.all(10),
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-            duration: Duration(seconds: 5),
-          );
-        }
+          "Terjadi Kesalahan",
+          "Email tidak ditemukan. Pastikan email sudah terdaftar.",
+          snackPosition: SnackPosition.BOTTOM,
+          margin: EdgeInsets.all(10),
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: Duration(seconds: 5),
+        );
       }
-   
+      if (e.code == "invalid-email") {
+        Get.snackbar(
+          "Terjadi Kesalahan",
+          "Yang anda masukan bukan email",
+          snackPosition: SnackPosition.BOTTOM,
+          margin: EdgeInsets.all(10),
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: Duration(seconds: 5),
+        );
+      }
+      if (e.code == "channel-error") {
+        Get.snackbar(
+          "Terjadi Kesalahan",
+          "Harap masukkan email terlebih dahulu",
+          snackPosition: SnackPosition.BOTTOM,
+          margin: EdgeInsets.all(10),
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: Duration(seconds: 5),
+        );
+      }
+    }
   }
 
   void updateProfile() {}
